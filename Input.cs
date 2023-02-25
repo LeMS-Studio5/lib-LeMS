@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace libProChic
+namespace libLeMS
 {
-    public class InputBox: ProI2padamsShell
+    public class InputBox: Shell
     {
         private Config config;
         private string v1;

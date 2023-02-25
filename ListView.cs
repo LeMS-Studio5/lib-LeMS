@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace libProChic
+namespace libLeMS
 {
     public class ListView : System.Windows.Forms.ListView
     {
@@ -68,7 +68,7 @@ namespace libProChic
             if (com != null)
             {
                 OwnerDraw = false;
-                SelectedColor = com.convertColour(com.Config.GetConfig("Colors", "Hilight").Setting);
+                SelectedColor = com.convertColour(com.Config.GetConfig("Colors", "Hilight").Setting); //This and next few lines requires 95 INI file TODO: Update
                 SelectedTextColor = com.convertColour(com.Config.GetConfig("Colors", "HilightText").Setting);
                 BackColor = com.convertColour(com.Config.GetConfig("Colors", "Window").Setting);
                 ForeColor = com.convertColour(com.Config.GetConfig("Colors", "WindowText").Setting);

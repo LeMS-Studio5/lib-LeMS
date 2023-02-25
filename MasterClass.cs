@@ -4,7 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
-namespace libProChic{
+namespace libLeMS{
     public  class MasterClass {
         private ConfigHelper con;
         private List<Color> colPallette = new List<Color>();

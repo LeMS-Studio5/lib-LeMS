@@ -1,4 +1,7 @@
-﻿namespace libProChic
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace libLeMS
 {
     public class Label:System.Windows.Forms.Label
     {
@@ -10,18 +13,18 @@
             TextChanged += (s, e) => Invalidate();
         }
 
-       //protected override void OnPaint(PaintEventArgs e)
-       //{
-       //    base.OnPaint(e);
-       //    var gfx = e.Graphics;
-       //    if (BackColor != Color.Transparent) gfx.Clear(BackColor);
-       //    StringFormat sf = new StringFormat();
-       //    sf.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Show;
-       //    gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-       //
-       //    gfx.DrawString(Text, Font, new SolidBrush(ForeColor), ClientRectangle, sf);
-       //    Height = (int)gfx.MeasureString(Text, Font, ClientRectangle.Width).Height;
-       //}
+       protected override void OnPaint(PaintEventArgs e)
+       {
+           base.OnPaint(e);
+           var g = e.Graphics;
+           if (BackColor != Color.Transparent) g.Clear(BackColor);
+           StringFormat sf = new StringFormat();
+           sf.HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Show;
+           g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+       
+           g.DrawString(Text, Font, new SolidBrush(ForeColor), ClientRectangle, sf);
+           Height = (int)g.MeasureString(Text, Font, ClientRectangle.Width).Height;
+       }
 
         private const int CS_DROPSHADOW = 0x00020000;
         protected override System.Windows.Forms.CreateParams CreateParams

@@ -13,7 +13,7 @@ using Microsoft.VisualBasic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace libProChic
+namespace libLeMS
 {
 
     public class Button : System.Windows.Forms.Button

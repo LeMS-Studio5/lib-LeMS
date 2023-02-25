@@ -16,12 +16,12 @@ using System.Windows.Forms;
 using System.Net;
 using System.Security.Permissions;
 
-namespace libProChic
+namespace libLeMS
 {
-    public class ProI2padamsShell: System.Windows.Forms.Panel
+    public class Shell: System.Windows.Forms.Panel
     {
         private MasterClass com = new MasterClass();               
-        public ProI2padamsShell()
+        public Shell()
         {
            // if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
                 InitializeComponent();

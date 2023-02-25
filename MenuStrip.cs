@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace libProChic
+namespace libLeMS
 {
     public class MenuStrip : System.Windows.Forms.MenuStrip
     {

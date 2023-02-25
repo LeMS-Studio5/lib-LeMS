@@ -6,7 +6,7 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-namespace libProChic{
+namespace libLeMS{
     public class ExplorerListView : ListView{
         public Bitmap addImage(string strPath, string strCurrentDir){
             string strFilPath = strPath;
@@ -247,7 +247,7 @@ namespace libProChic{
         }
         public event FileOpenedHandler FileOpened;
         public delegate void FileOpenedHandler(String filePath);
-        private String elvMode = "StandAlone";
+        private String elvMode { get; set; }= "StandAlone";
         public bool OnErrorGoToParentDirectory { get; set; } = false;
         private NamedPipeServerStream pipeServer = new NamedPipeServerStream("ProjectI2padamsNet",PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances);     // Based on code from https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-use-anonymous-pipes-for-local-interprocess-communication
         private StreamWriter sw;

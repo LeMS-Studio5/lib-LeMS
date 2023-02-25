@@ -5,11 +5,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace libProChic
+namespace libLeMS
 {
   public  class ConfigHelper
     {
-        private List<ConfigGroup> winINI { get; set; } = new List<ConfigGroup>();            //Variable that will hold each config line
+        private List<ConfigGroup> INI { get; set; } = new List<ConfigGroup>();            //Variable that will hold each config line
         private String fileLoc { get; set; } = "";         //File Location of the Config File   
         FileSystemWatcher fsw;       //Creates FileWatcher to update file as needed
         public ConfigHelper(String fileName):this(fileName,true) {        }
@@ -17,7 +17,7 @@ namespace libProChic
             Debug.WriteLine(fileName);
             fileLoc = fileName;            //If does then Saves the config file location
             if (File.Exists(fileName)){
-                updateConfig();     //Adds contents of config to WinINI if fileName exist
+                updateConfig();     //Adds contents of config to INI if fileName exist
                 fsw = new FileSystemWatcher(Path.GetDirectoryName(fileName));
                 fsw.EnableRaisingEvents = true;     //Enables FSW to raise events
                 AutoRefresh = autoUpdate;
@@ -46,7 +46,7 @@ namespace libProChic
         }
         private void updateConfig(){
             String[] fil = ReadAllLines(fileLoc);     //Reads config file and places it in String varible fil
-            winINI.Clear();     //Clears any items that are currently in the list
+            INI.Clear();     //Clears any items that are currently in the list
             for (int i = 0; i <= fil.Length - 1; i++)      //Loops through each line of the fil
             {
                 if (fil[i].StartsWith("[") && fil[i].EndsWith("]"))
@@ -57,14 +57,14 @@ namespace libProChic
                         grp.Add(new Config(fil[i]));    //Creates config out of line and adds it to grp
                         i++;        //Increments to next line of String
                     }
-                    grp.Index = winINI.Count;   //Adds Index, found by the count of the previous amount in winINI
-                    winINI.Add(grp);        //Adds grp to winINI (which holds the complete config file)
+                    grp.Index = INI.Count;   //Adds Index, found by the count of the previous amount in INI
+                    INI.Add(grp);        //Adds grp to INI (which holds the complete config file)
                 }
             }
         }
         public event EventHandler ConfigUpdated;
         public ConfigGroup GetConfigGroup(string group2Find){
-            foreach(ConfigGroup grp in winINI){     //Loops through each ConfigGroup
+            foreach(ConfigGroup grp in INI){     //Loops through each ConfigGroup
                // Console.WriteLine(grp.Name);
                 if (grp.Name.Equals(group2Find,StringComparison.CurrentCultureIgnoreCase)) return grp;     //If the group name matches the one being searched  for then return it
             }
@@ -72,13 +72,13 @@ namespace libProChic
         }
         public ConfigGroup[] GetAllConfigsGroup()
         {
-            return winINI.ToArray();            
+            return INI.ToArray();            
         }
         public void RemoveGroup(string Group2Find){
-            winINI.RemoveAt(GetConfigGroup(Group2Find).Index);
-            for (int index = 0; index <= winINI.Count - 1; index++){        //Loops through each configGroup of winINI
-                if (winINI[index].Name==Group2Find){        //If element equals search
-                    winINI.RemoveAt(index);                 //The ConfigGroup is removed
+            INI.RemoveAt(GetConfigGroup(Group2Find).Index);
+            for (int index = 0; index <= INI.Count - 1; index++){        //Loops through each configGroup of INI
+                if (INI[index].Name==Group2Find){        //If element equals search
+                    INI.RemoveAt(index);                 //The ConfigGroup is removed
                     FileChanged = true;                       //Boolean that identifies that there has been a change is set to true (LEGACY)
                 }
             }
@@ -87,7 +87,7 @@ namespace libProChic
             GetConfigGroup(configGroup).Remove(Config2Find);        //Finds group and removes config specified in String
         }
         public void AddGroup(String groupName){
-            winINI.Add(new ConfigGroup(groupName)); //Adds new Config Group and adds it to winINI
+            INI.Add(new ConfigGroup(groupName)); //Adds new Config Group and adds it to INI
         }
         public String FileLocation { get { return fileLoc; } }
         private Boolean FileChanged{
@@ -119,7 +119,7 @@ namespace libProChic
         }
         private String prepareFile(){
             String cpl = "";    //Creates empty string that will be used to create assembled config file
-            foreach (ConfigGroup grp in winINI){        //Loops through each ConfigGroup in winINI
+            foreach (ConfigGroup grp in INI){        //Loops through each ConfigGroup in INI
                 cpl += $"[{grp.Name}] {Environment.NewLine}";   //Places Group Heading in String
                 foreach(Config con in grp.ToArray()){       ///Loops through each config in Group
                     cpl += $"{con.SettingName}={con.Setting}{Environment.NewLine}"; //Concats setting line
@@ -130,7 +130,7 @@ namespace libProChic
             return cpl;     //Returns compiled file
         }
         public Boolean Exists(String GroupName){
-            foreach(ConfigGroup c in winINI){
+            foreach(ConfigGroup c in INI){
                 if (c.Name.Equals(GroupName,StringComparison.CurrentCultureIgnoreCase)) return true;
             }
             return false;
@@ -146,7 +146,7 @@ namespace libProChic
 
                 // TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
                 // TODO: set large fields to null.
-                winINI = null;
+                INI = null;
             }
             this.disposedValue = true;
         }

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
-namespace libProChic
+namespace libLeMS
 {
     public class ExplorerTreeView : System.Windows.Forms.TreeView
     {
