@@ -104,7 +104,6 @@ namespace libLeMS{
                 return base.BackgroundImage;
             }
         }
-        private MasterClass com;
         private System.ComponentModel.IContainer components;
         private string dir = "";
         public string Directory
@@ -371,7 +370,7 @@ namespace libLeMS{
             }
             else
             {
-            Console.WriteLine(wallMode + source);
+            Console.WriteLine("Wallpaper Mode: " + wallMode + " Source: " + source);
                 base.BackgroundImageTiled = false;
                 base.BackgroundImage = updateBackground(ref pat,ref wall,wallMode,base.Size, BackColor);
             }
@@ -419,11 +418,15 @@ namespace libLeMS{
         public static Bitmap updateBackground(ref Bitmap imgPattern, ref Bitmap imgWallpaper, ImageLayout wallpaperMode, Size imgSize, Color backgroundCol)
         {
             Bitmap bmp = new Bitmap(imgSize.Width, imgSize.Height);
-            int imgH = imgWallpaper.Height, imgW = imgWallpaper.Width;
+            int imgH = 0, imgW = 0;
+            if (imgWallpaper != null){
+                imgH = imgWallpaper.Height;
+                imgW = imgWallpaper.Width;
+            }
             Graphics g = Graphics.FromImage(bmp);
             g.FillRectangle(new SolidBrush(backgroundCol), 0, 0, imgSize.Width, imgSize.Height);
-            if (wallpaperMode == ImageLayout.Center) g.FillRectangle(new TextureBrush(imgPattern), new Rectangle(0, 0, imgSize.Width, imgSize.Height));
-                if (wallpaperMode == ImageLayout.Center)  g.DrawImage(imgWallpaper, new Rectangle(Convert.ToInt32((imgSize.Width / (double)2) - (imgW / (double)2)), Convert.ToInt32((imgSize.Height / (double)2) - (imgH / (double)2)),imgW,imgH));
+            if (wallpaperMode == ImageLayout.Center && imgPattern!=null) g.FillRectangle(new TextureBrush(imgPattern), new Rectangle(0, 0, imgSize.Width, imgSize.Height));
+            if (wallpaperMode == ImageLayout.Center && imgWallpaper!=null)  g.DrawImage(imgWallpaper, new Rectangle(Convert.ToInt32((imgSize.Width / (double)2) - (imgW / (double)2)), Convert.ToInt32((imgSize.Height / (double)2) - (imgH / (double)2)),imgW,imgH));
             return bmp;
         }
         public Boolean UpdateDesktop { get { return upDesk; } set { upDesk = value; if (value) RefreshImage("Update"); } }
@@ -452,7 +455,7 @@ namespace libLeMS{
             IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();  //Based on https://stackoverflow.com/questions/234231/creating-application-shortcut-in-a-directory/28417360#28417360
             if (IsSymbolic(lnkLocation))
             {
-                Console.WriteLine(lnkLocation);
+                Console.WriteLine("Shortcut creation: " + lnkLocation);
                 lnk = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(lnkLocation);
                 lType = lnkType.Windows;
 
@@ -472,7 +475,7 @@ namespace libLeMS{
         {
             set
             {
-                if (lType == lnkType.Windows) { lnk.TargetPath = value; Save(); } else conLNK.SetConfig("Shortcut", "Target", value);
+                if (lType == lnkType.Windows) { lnk.TargetPath = value; } else conLNK.SetConfig("Shortcut", "Target", value); Save();
 
             }
             get
@@ -483,6 +486,7 @@ namespace libLeMS{
         public void Save()
         {
             if (lType == lnkType.Windows) lnk.Save();
+            if (lType == lnkType.ProjectI2padams) conLNK.Save();
         }
         private lnkType lType;
         public enum lnkType

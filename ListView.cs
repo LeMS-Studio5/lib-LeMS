@@ -11,12 +11,13 @@ namespace libLeMS
     public class ListView : System.Windows.Forms.ListView
     {
         private System.ComponentModel.IContainer components;
-        private MasterClass com;
+        protected MasterClass com;
 
         public ListView() : base()
         {
             try
             {
+                com = new MasterClass();
                 SmallImageList = new System.Windows.Forms.ImageList();
                 LargeImageList = new System.Windows.Forms.ImageList();
                 //   Console.WriteLine(Items == null);
@@ -27,10 +28,6 @@ namespace libLeMS
             {
                 Console.WriteLine(ex.ToString());
             }
-        }
-        public ListView(String mode) : base()
-        {
-            com = new MasterClass();
         }
         protected override void Dispose(bool disposing)
         {
