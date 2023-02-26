@@ -116,8 +116,16 @@ namespace libLeMS
         protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
         {
             base.OnRenderItemText(e);
-            //Debug.WriteLineIf(e.Item.Selected, com.convertColour(com.Config.GetConfig("Colors", "HilightText").Setting).ToString());
-            if (e.Item.Selected) e.Item.ForeColor = com.convertColour(com.Config.GetConfig("Colors", "HilightText").Setting); else e.Item.ForeColor = com.convertColour(com.Config.GetConfig("Colors", "MenuText").Setting);
+            if ( e.Item.GetType() != typeof(ToolStripSeparator) && selectedMenu((ToolStripMenuItem)e.Item)) e.Item.ForeColor = com.convertColour(com.Config.GetConfig("Colors", "HilightText").Setting); else e.Item.ForeColor = com.convertColour(com.Config.GetConfig("Colors", "MenuText").Setting);
+        }
+        private bool selectedMenu(ToolStripMenuItem itm){
+            if (itm.Selected) return true; else{
+                foreach (ToolStripItem sub in itm.DropDownItems){
+                    if (sub.GetType() == typeof(ToolStripMenuItem) && selectedMenu((ToolStripMenuItem)sub)) return true;
+                }
+            }
+            //TODO: Add Property to choose between select check on recur or not
+            return false;
         }
     }
 }
