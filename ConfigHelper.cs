@@ -14,7 +14,7 @@ namespace libLeMS
         FileSystemWatcher fsw;       //Creates FileWatcher to update file as needed
         public ConfigHelper(String fileName):this(fileName,true) {        }
         public ConfigHelper(string fileName,Boolean autoUpdate) {
-            Debug.WriteLine(fileName);
+            Debug.WriteLine("Loading config: " + fileName);
             fileLoc = fileName;            //If does then Saves the config file location
             if (File.Exists(fileName)){
                 updateConfig();     //Adds contents of config to INI if fileName exist
