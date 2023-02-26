@@ -27,7 +27,7 @@ namespace libLeMS{
             colPallette.Clear();
             foreach (String col in File.ReadAllLines(toSystemPath(con.GetConfig("windows", "Color").Setting)))
             {
-                colPallette.Add(convertColour(col,false));
+                if (col!="") colPallette.Add(convertColour(col,false));
             }
         }
         public ConfigHelper Config { get { return con; } }
@@ -55,7 +55,10 @@ namespace libLeMS{
         public Bitmap prepareImage(string imageLocation)
         {
             if (!File.Exists(imageLocation))
-                throw new Exception(imageLocation + " could not be found");
+            {
+                Console.WriteLine(imageLocation + " could not be found");
+                return null;
+            }
             FileStream fs = new System.IO.FileStream(imageLocation, System.IO.FileMode.Open, System.IO.FileAccess.Read);
             BinaryReader Reader = new BinaryReader(fs);
             Bitmap bmpStream = new Bitmap(new MemoryStream(Reader.ReadBytes(System.Convert.ToInt32(fs.Length))));//System.Drawing.Image.FromStream(ImageStream));
