@@ -20,6 +20,7 @@ namespace libLeMS
 {
     public class Shell: System.Windows.Forms.Panel
     {
+        protected IntPtr id;
         private MasterClass com = new MasterClass();               
         public Shell()
         {
@@ -28,6 +29,7 @@ namespace libLeMS
             if (themeLocation == "") themeLocation = com.toSystemPath(com.Config.GetConfig("Windows", "ThemeLocation").Setting);
             themeConfig = new ConfigHelper(themeLocation + "Config.ini");
             themeRefresh();
+            id = this.Handle;
         }
         protected override void Dispose(bool disposing)
         {
@@ -261,13 +263,13 @@ namespace libLeMS
             this.timData.Enabled = true;
             this.timData.Interval = 90;
             // 
-            // ProI2AppHolder
+            // Shell
             // 
             this.ClientSize = new System.Drawing.Size(359, 310);
             this.Controls.Add(this.program);
             this.DoubleBuffered = true;
             this.BorderStyle = BorderStyle.None;
-            this.Name = "ProI2AppHolder";
+            this.Name = "Shell";
             this.Text = "templete";
             this.program.ResumeLayout(false);
             this.programtopbar.ResumeLayout(false);
@@ -287,9 +289,11 @@ namespace libLeMS
             }
             set
             {
-                foc = value;
-                Debug.WriteLine(Text + " focus has changed to " + foc);
-                themeRefresh();
+                if (foc != value){
+                    foc = value;
+                    Debug.WriteLine(Text + " focus has changed to " + foc);
+                    themeRefresh();
+                }
             }
         }
         public new event EventHandler Resize = new EventHandler((e, a) => { });
@@ -376,9 +380,9 @@ namespace libLeMS
             pullbs.Stop();
         }
         private void programtopbar_MouseDown(Object sender, MouseEventArgs e) // , programname.MouseDown, programIcon.MouseDown ', outputProgramtopbar.MouseDown
-        {
-            if (e.Button == MouseButtons.Left)
-            {
+        {            
+            if (e.Button == MouseButtons.Left){
+                FocusChanged?.Invoke(id, e);
                 ((Control)sender).Capture = false;
                 const int WM_NCLBUTTONDOWN = 0xA1;
                 const int HTCAPTION = 2; // Console.WriteLine(sender.Parent.Parent.Name)
@@ -391,9 +395,14 @@ namespace libLeMS
             this.Visible = false;
         }
         public event FormClosingEventHandler Closing;
+        public event EventHandler FocusChanged;
         private void closebutton_Click(object sender, EventArgs e) // , outputClosebutton.Click, pro.Exited
         {
-            Closing?.Invoke(sender,new FormClosingEventArgs(CloseReason.UserClosing,false));
+            Close(CloseReason.UserClosing);
+        }
+        public void Close(CloseReason reason)
+        {
+            Closing?.Invoke(this, new FormClosingEventArgs(reason, false));
             Dispose();
         }
         private void maximizebutton_Click(System.Object sender, System.EventArgs e)
@@ -412,24 +421,6 @@ namespace libLeMS
             // If Height < programtopbar.Height + 10 Then Exit Sub Else RaiseEvent Resize(sender, e)
             Resize?.Invoke(sender, e);
         }
-        // OLD Private Sub maximizebutton_MouseDown(sender PictureBox, e MouseEventArgs) Handles maximizebutton.MouseDown
-        // OLD     If maximize Then sender.Image = com.getMaxLargeDown Else sender.Image = com.getMaxSmallDown
-        // OLD End Sub
-        // OLD Private Sub maximizebutton_MouseUp(sender PictureBox, e MouseEventArgs) Handles maximizebutton.MouseUp
-        // OLD     If maximize Then sender.Image = com.getMaxLargeUp Else sender.Image = com.getMaxSmallUp
-        // OLD End Sub
-        // OLD Private Sub minimizebutton_MouseDown(sender PictureBox, e MouseEventArgs) Handles minimizebutton.MouseDown
-        // OLD     sender.Image = com.getMinimiseDown
-        // OLD End Sub
-        // OLD Private Sub minimizebutton_MouseUp(sender PictureBox, e MouseEventArgs) Handles minimizebutton.MouseUp
-        // OLD     sender.Image = com.getMinimiseUp
-        // OLD End Sub
-        // OLD Private Sub closebutton_MouseDown(sender PictureBox, e MouseEventArgs) Handles closebutton.MouseDown ', outputClosebutton.MouseDown
-        // OLD     sender.Image = com.getCloseDown
-        // OLD End Sub
-        // OLD Private Sub closebutton_MouseUp(sender PictureBox, e MouseEventArgs) Handles closebutton.MouseUp ', outputClosebutton.MouseUp
-        // OLD     sender.Image = com.getCloseUp
-        // OLD End Sub
         private void com_ConfigUpdate()
         {
             themeRefresh();
@@ -454,16 +445,6 @@ namespace libLeMS
             //Dispatcher.PushFrame(frame);
             return DialogResult;
         }
-        //  private Label lblError;
-        //  private OpenFileDialog ofdEXE;
-        //  private ContextMenuStrip cmsPicApp;
-        //  private ToolStripMenuItem RestoreToolStripMenuItem;
-        //  private ToolStripMenuItem MoveToolStripMenuItem;
-        //  private ToolStripMenuItem SizeToolStripMenuItem;
-        //  private ToolStripMenuItem MinimizeToolStripMenuItem;
-        //  private ToolStripMenuItem MaximizeToolStripMenuItem;
-        //  private ToolStripSeparator ToolStripSeparator1;
-        //  private ToolStripMenuItem CloseToolStripMenuItem;
         private Timer pullbs;
         private Timer pullbottom;
         private Timer pullside;
