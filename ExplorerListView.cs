@@ -7,8 +7,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 namespace libLeMS{
-    public class ExplorerListView : ListView{
-        public Bitmap addImage(string strPath, string strCurrentDir){
+    public class ExplorerListView : ListView {
+        public Bitmap addImage(string strPath, string strCurrentDir) {
             string strFilPath = strPath;
             try
             {
@@ -117,7 +117,7 @@ namespace libLeMS{
                     if (value != dir)
                     {
                         dir = value;
-                        if ( AutoRefreshFolder)
+                        if (AutoRefreshFolder)
                             RefreshFolder();
                     }
                 }
@@ -213,7 +213,7 @@ namespace libLeMS{
                     return System.Diagnostics.FileVersionInfo.GetVersionInfo(filePath).ProductName;
                 else
                 {
-                   if (com==null||(foldOptions != null && Boolean.Parse(foldOptions.GetConfig("View", "HideDosExt").Setting))) return System.IO.Path.GetFileName(filePath); else return System.IO.Path.GetFileNameWithoutExtension(filePath);
+                    if (com == null || (foldOptions != null && Boolean.Parse(foldOptions.GetConfig("View", "HideDosExt").Setting))) return System.IO.Path.GetFileName(filePath); else return System.IO.Path.GetFileNameWithoutExtension(filePath);
                 }
             }
             else if (System.IO.Directory.Exists(filePath))
@@ -224,12 +224,12 @@ namespace libLeMS{
         }
         private void fswExplorer_Changed(object sender, FileSystemEventArgs e)
         {
-            if (!System.IO.Directory.Exists(dir) && AutoDispose)   this.Dispose();
+            if (!System.IO.Directory.Exists(dir) && AutoDispose) this.Dispose();
             if (!System.IO.Directory.Exists(dir) && !AutoDispose) UpDirectory();
             if (AutoRefreshFolder)
                 RefreshFolder();
         }
-        public ExplorerListView(String mode) : this() 
+        public ExplorerListView(String mode) : this()
         {
             com = new MasterClass();
             foldOptions = new ConfigHelper(com.toSystemPath(com.Config.GetConfig("Explorer", "ConfigLoc").Setting));
@@ -240,15 +240,34 @@ namespace libLeMS{
         {
             this.MouseDoubleClick += thisDoubleClick;
         }
-        private  void thisDoubleClick(Object sender, EventArgs e)
+        private void thisDoubleClick(Object sender, EventArgs e)
         {
             if (elvMode == "StandAlone" && FocusedItem != null && File.Exists(FocusedItem.Tag.ToString())) FileOpened?.Invoke(FocusedItem.Tag.ToString());
         }
         public event FileOpenedHandler FileOpened;
         public delegate void FileOpenedHandler(String filePath);
-        private String elvMode { get; set; }= "StandAlone";
+        private String elvMode { get; set; } = "StandAlone";
+        public Bitmap getPattern(string patternString){
+            int y = 0;
+            System.Drawing.Bitmap canvasbitmap = new System.Drawing.Bitmap(152, 152);
+            Graphics g = Graphics.FromImage(canvasbitmap);
+            if (patternString == "(None)")
+                return canvasbitmap;
+            foreach (var dec in patternString.Split(' '))
+            {
+                int x = 0;
+                for (int index = 0; index <= 7; index++)
+                {
+                    if (Convert.ToString(Convert.ToInt32(dec), 2).PadLeft(8, '0').Substring(index, 1) == "1")
+                        g.FillRectangle(Brushes.Black, x * 19, y * 19, 19, 19);
+                    x += 1;
+                }
+                y += 1;
+            }
+            return canvasbitmap;
+        }
         public bool OnErrorGoToParentDirectory { get; set; } = false;
-        private NamedPipeServerStream pipeServer = new NamedPipeServerStream("ProjectI2padamsNet",PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances);     // Based on code from https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-use-anonymous-pipes-for-local-interprocess-communication
+        private NamedPipeServerStream pipeServer = new NamedPipeServerStream("ProjectI2padamsNet", PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances);     // Based on code from https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-use-anonymous-pipes-for-local-interprocess-communication
         private StreamWriter sw;
         public void OpenFile(String filPath)
         {
@@ -285,8 +304,9 @@ namespace libLeMS{
         }
         [System.Runtime.InteropServices.DllImport("shlwapi")]
         public static extern long PathIsDirectory(string pszPath); // return 16 for local folders and 1 for server folders
-        private Bitmap pat=new Bitmap(1,1);
-        public Bitmap Pattern { get { return pat; } set {pat = value; if (upDesk) RefreshImage("pat"); } }
+        private Bitmap pat = new Bitmap(1, 1);
+        public Bitmap Pattern { get { return pat; } set { pat = value; if (upDesk) RefreshImage("pat"); } }
+        public String PatternString{ set { Pattern = new Bitmap(getPattern(value),8,8); } }
         public void RefreshFolder()
         {
             try
